@@ -1,7 +1,7 @@
 package com.algaworks.algafood.infrastructure.repository;
 
-import static com.algaworks.algafood.infrastructure.repository.Spec.RestauranteSpec.comFreteGratis;
-import static com.algaworks.algafood.infrastructure.repository.Spec.RestauranteSpec.comNomeSemelhante;
+import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpec.comFreteGratis;
+import static com.algaworks.algafood.infrastructure.repository.spec.RestauranteSpec.comNomeSemelhante;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
