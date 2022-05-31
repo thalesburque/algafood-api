@@ -1,0 +1,7 @@
+{
+    "nome": "Hirota food",
+    "taxaFret": 5,
+    "cozinha": {
+        "id": 1
+    }
+}
