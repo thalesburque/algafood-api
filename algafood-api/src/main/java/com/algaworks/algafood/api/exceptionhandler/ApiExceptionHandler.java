@@ -1,6 +1,6 @@
 package com.algaworks.algafood.api.exceptionhandler;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,7 +24,7 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.algaworks.algafood.api.exceptionhandler.enums.ProblemType;
-import com.algaworks.algafood.core.config.ValidacaoException;
+import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
@@ -227,10 +227,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		if (body == null) {
 			body = Problem.builder().status(status.value()).title(status.getReasonPhrase())
-					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).timestamp(LocalDateTime.now()).build();
+					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).timestamp(OffsetDateTime.now()).build();
 		} else if (body instanceof String) {
 			body = Problem.builder().status(status.value()).title((String) body)
-					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).timestamp(LocalDateTime.now()).build();
+					.userMessage(MSG_GENERICA_ERRO_USUARIO_FINAL).timestamp(OffsetDateTime.now()).build();
 		}
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
@@ -265,7 +265,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private Problem.ProblemBuilder createProblemBuilder(Integer status, ProblemType problemType, String detail) {
 		return Problem.builder().status(status).type(problemType.getUri()).title(problemType.getTitle()).detail(detail)
-				.timestamp(LocalDateTime.now());
+				.timestamp(OffsetDateTime.now());
 	}
 	
 

@@ -18,6 +18,7 @@
 
 	<properties>
 		<java.version>11</java.version>
+		<modelmapper.version>3.0.0</modelmapper.version>
 	</properties>
 
 	<dependencies>
@@ -84,6 +85,11 @@
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-json</artifactId>
 			<version>2.5.13</version>
+		</dependency>
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>${modelmapper.version}</version>
 		</dependency>
 	</dependencies>
 
