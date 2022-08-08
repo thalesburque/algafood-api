@@ -7,7 +7,7 @@ import com.algaworks.algafood.domain.model.enums.StatusPedido;
 
 import lombok.Getter;
 import lombok.Setter;
-
+ 
 @Getter
 @Setter
 public class PedidoResumoModel {

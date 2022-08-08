@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.algaworks.algafood.api.assembler.ProdutoInputDisassembler;
@@ -43,11 +44,18 @@ public class RestauranteProdutoController {
 	ProdutoInputDisassembler produtoInputDisassembler;
 
 	@GetMapping
-	public List<ProdutoModel> listar(@PathVariable Long restauranteId) {
+	public List<ProdutoModel> listar(@PathVariable Long restauranteId,
+			@RequestParam(required = false) boolean incluirInativos) {
 
 		Restaurante restaurante = cadastroRestaurante.buscarComTratamentoErro(restauranteId);
 
-		List<Produto> produtos = produtoRepository.findByRestaurante(restaurante);
+		List<Produto> produtos = null;
+
+		if (incluirInativos) {
+			produtos = produtoRepository.findByRestaurante(restaurante);
+		} else {
+			produtos = produtoRepository.findAtivosByRestaurante(restaurante);
+		}
 
 		return produtoModelAssembler.toCollectionModel(produtos);
 
@@ -78,13 +86,13 @@ public class RestauranteProdutoController {
 	@PutMapping("/{produtoId}")
 	public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@RequestBody @Valid ProdutoInput produtoInput) {
-		
+
 		Produto produtoAtual = cadastroProduto.buscarComtratamentoErro(produtoId, restauranteId);
-		
+
 		produtoInputDisassembler.copyToDomainObject(produtoInput, produtoAtual);
-		
+
 		produtoAtual = cadastroProduto.salvar(produtoAtual);
-		
+
 		return produtoModelAssembler.toModel(produtoAtual);
 
 	}

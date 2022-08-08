@@ -29,6 +29,8 @@ public class CadastroUsuarioService {
 	@Transactional
 	public Usuario salvar(Usuario usuario) {
 		
+		//remove usuario desserializado no controller do contexto do entityManager 
+		//para que em caso de erro o objeto nao seja commitado apos a transacao
 		usuarioRepository.detach(usuario);
 		
 		Optional<Usuario> usuarioExistente = usuarioRepository.findByEmail(usuario.getEmail());
