@@ -1,0 +1,1 @@
+alter table item_pedido add constraint uk_item_pedido_produto unique key (pedido_id, produto_id);
