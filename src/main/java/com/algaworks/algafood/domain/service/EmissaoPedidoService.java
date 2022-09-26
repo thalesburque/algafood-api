@@ -74,7 +74,7 @@ public class EmissaoPedidoService {
 	private void validarItens(Pedido pedido) {
 
 		pedido.getItens().forEach(item -> {
-			Produto produto = cadastroProduto.buscarComtratamentoErro(item.getProduto().getId(),
+			Produto produto = cadastroProduto.buscarComTratamentoErro(item.getProduto().getId(),
 					pedido.getRestaurante().getId());
 
 			if (!produto.getAtivo()) {

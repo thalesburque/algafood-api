@@ -16,6 +16,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -41,6 +42,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_GENERICA_ERRO_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema, "
 			+ "Tente novamente e se o problema persistir, entre em contato com o administrador.";
+
+	@Override
+	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
+			HttpHeaders headers, HttpStatus status, WebRequest request) {
+
+		return ResponseEntity.status(status).headers(headers).build();
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
@@ -97,12 +105,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
 	}
-	
+
 	@Override
-	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+	protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status,
+			WebRequest request) {
 
 		return handleValidationInternal(ex, ex, headers, status, request);
-		
+
 	}
 
 	private ResponseEntity<Object> handleInvalidFormatException(InvalidFormatException ex, HttpHeaders headers,
@@ -221,13 +230,13 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 		return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
 
 	}
-	
+
 	@ExceptionHandler(ValidacaoException.class)
 	public ResponseEntity<?> handleValidacaoException(ValidacaoException ex, WebRequest request) {
 
 		return handleValidationInternal(ex, ex.getBindingResult(), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 
-	} 
+	}
 
 	@Override
 	protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body, HttpHeaders headers,
@@ -243,10 +252,10 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return super.handleExceptionInternal(ex, body, headers, status, request);
 	}
-	
+
 	private ResponseEntity<Object> handleValidationInternal(Exception ex, BindingResult bindingResult,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		
+
 		ProblemType problemType = ProblemType.DADOS_INVALIDOS;
 		String detail = "Um ou mais campos estão inválidos. Faça o preenchimento correto e tente novamente.";
 
@@ -268,13 +277,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 				.build();
 
 		return handleExceptionInternal(ex, problem, headers, status, request);
-		
+
 	}
 
 	private Problem.ProblemBuilder createProblemBuilder(Integer status, ProblemType problemType, String detail) {
 		return Problem.builder().status(status).type(problemType.getUri()).title(problemType.getTitle()).detail(detail)
 				.timestamp(OffsetDateTime.now());
 	}
-	
 
 }

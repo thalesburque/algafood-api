@@ -19,8 +19,9 @@ public class CadastroProdutoService {
 		return produtoRepository.save(produto);
 	}
 
-	public Produto buscarComtratamentoErro(Long produtoId, Long restauranteId) {
+	public Produto buscarComTratamentoErro(Long produtoId, Long restauranteId) {
 		return produtoRepository.findById(restauranteId, produtoId)
 				.orElseThrow(() -> new ProdutoNaoEncontradoException(produtoId, restauranteId));
 	}
+	
 }

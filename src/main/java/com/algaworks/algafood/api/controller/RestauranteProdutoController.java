@@ -64,7 +64,7 @@ public class RestauranteProdutoController {
 	@GetMapping("/{produtoId}")
 	public ProdutoModel buscar(@PathVariable Long restauranteId, @PathVariable Long produtoId) {
 
-		Produto produto = cadastroProduto.buscarComtratamentoErro(produtoId, restauranteId);
+		Produto produto = cadastroProduto.buscarComTratamentoErro(produtoId, restauranteId);
 
 		return produtoModelAssembler.toModel(produto);
 
@@ -87,7 +87,7 @@ public class RestauranteProdutoController {
 	public ProdutoModel atualizar(@PathVariable Long restauranteId, @PathVariable Long produtoId,
 			@RequestBody @Valid ProdutoInput produtoInput) {
 
-		Produto produtoAtual = cadastroProduto.buscarComtratamentoErro(produtoId, restauranteId);
+		Produto produtoAtual = cadastroProduto.buscarComTratamentoErro(produtoId, restauranteId);
 
 		produtoInputDisassembler.copyToDomainObject(produtoInput, produtoAtual);
 
