@@ -38,24 +38,23 @@ public class RestauranteController {
 
 	@Autowired
 	private CadastroRestauranteService cadastroRestaurante;
-	
+
 	@Autowired
 	private RestauranteModelAssembler restauranteModelAssembler;
-	
+
 	@Autowired
 	private RestauranteInputDisassembler restauranteInputDisassembler;
-	
+
 	/*
-	@Autowired
-	private SmartValidator validator;
-	*/
+	 * @Autowired private SmartValidator validator;
+	 */
 
 	@JsonView(RestauranteView.Resumo.class)
 	@GetMapping
 	public List<RestauranteModel> listar() {
 		return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
 	}
-	
+
 	@JsonView(RestauranteView.ApenasNome.class)
 	@GetMapping(params = "projecao=apenas-nome")
 	public List<RestauranteModel> listarApenasNomes() {
@@ -64,7 +63,7 @@ public class RestauranteController {
 
 	@GetMapping("/{restauranteId}")
 	public RestauranteModel buscar(@PathVariable Long restauranteId) {
-		
+
 		return restauranteModelAssembler.toModel(cadastroRestaurante.buscarComTratamentoErro(restauranteId));
 
 	}
@@ -74,7 +73,7 @@ public class RestauranteController {
 	public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
 
 		Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
-		
+
 		try {
 			return restauranteModelAssembler.toModel(cadastroRestaurante.salvar(restaurante));
 		} catch (CozinhaNaoEncontradaException | CidadeNaoEncontradaException e) {
@@ -84,8 +83,9 @@ public class RestauranteController {
 	}
 
 	@PutMapping("/{restauranteId}")
-	public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteInput) {
-		
+	public RestauranteModel atualizar(@PathVariable Long restauranteId,
+			@RequestBody @Valid RestauranteInput restauranteInput) {
+
 		Restaurante restauranteAtual = cadastroRestaurante.buscarComTratamentoErro(restauranteId);
 
 		restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
@@ -99,66 +99,67 @@ public class RestauranteController {
 	}
 
 	/*
-	@PatchMapping("/{restauranteId}")
-	public Restaurante atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String, Object> campos, HttpServletRequest request) {
-
-		Restaurante restauranteAtual = cadastroRestaurante.buscarComTratamentoErro(restauranteId);
-
-		merge(campos, restauranteAtual, request);
-		validate(restauranteAtual, "restaurante");
-
-		return atualizar(restauranteId, restauranteAtual);
-	}
-
-	private void merge(Map<String, Object> campos, Restaurante restauranteDestino, HttpServletRequest request) {
-
-		ServletServerHttpRequest serverHttpRequest = new ServletServerHttpRequest(request);
-
-		try {
-		ObjectMapper objectMapper = new ObjectMapper();
-
-		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
-		objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, true);
-
-		// Mapeia campos do corpo da requisicao para o objeto. Campos nao preenchidos no
-		// corpo recebem null
-
-		Restaurante restauranteRequisicao = objectMapper.convertValue(campos, Restaurante.class);
-
-		// percorre a lista com os campos da requisicao
-		campos.forEach((nomePropriedade, valorPropriedade) -> {
-			// mapeia o campo da requisicao em uma variavel representando o atributo da
-			// classe restaurante
-			Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
-			// torna a representacao do atributo privado em acessivel
-			field.setAccessible(true);
-
-			// mapeia valor do atributo do restauranteOrigem mapeado para um novo objeto
-			// preservando o tipo
-			Object novoValor = ReflectionUtils.getField(field, restauranteRequisicao);
-
-			// altera o valor do objeto que que sera persistido conforme o campo enviado na
-			// requisicao
-			ReflectionUtils.setField(field, restauranteDestino, novoValor);
-		});
-		}catch(IllegalArgumentException e) {
-			Throwable rootCause = ExceptionUtils.getRootCause(e);
-			throw new HttpMessageNotReadableException(e.getMessage(), rootCause, serverHttpRequest);
-		}
-
-	}
-	
-	private void validate(Restaurante restaurante, String objectName) {
-		
-		BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(restaurante, objectName);
-		
-		validator.validate(restaurante, bindingResult);
-		
-		if(bindingResult.hasErrors()) {
-			throw new ValidacaoException(bindingResult);
-		}
-	}
-	*/
+	 * @PatchMapping("/{restauranteId}") public Restaurante
+	 * atualizarParcial(@PathVariable Long restauranteId, @RequestBody Map<String,
+	 * Object> campos, HttpServletRequest request) {
+	 * 
+	 * Restaurante restauranteAtual =
+	 * cadastroRestaurante.buscarComTratamentoErro(restauranteId);
+	 * 
+	 * merge(campos, restauranteAtual, request); validate(restauranteAtual,
+	 * "restaurante");
+	 * 
+	 * return atualizar(restauranteId, restauranteAtual); }
+	 * 
+	 * private void merge(Map<String, Object> campos, Restaurante
+	 * restauranteDestino, HttpServletRequest request) {
+	 * 
+	 * ServletServerHttpRequest serverHttpRequest = new
+	 * ServletServerHttpRequest(request);
+	 * 
+	 * try { ObjectMapper objectMapper = new ObjectMapper();
+	 * 
+	 * objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
+	 * true);
+	 * objectMapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES,
+	 * true);
+	 * 
+	 * // Mapeia campos do corpo da requisicao para o objeto. Campos nao preenchidos
+	 * no // corpo recebem null
+	 * 
+	 * Restaurante restauranteRequisicao = objectMapper.convertValue(campos,
+	 * Restaurante.class);
+	 * 
+	 * // percorre a lista com os campos da requisicao
+	 * campos.forEach((nomePropriedade, valorPropriedade) -> { // mapeia o campo da
+	 * requisicao em uma variavel representando o atributo da // classe restaurante
+	 * Field field = ReflectionUtils.findField(Restaurante.class, nomePropriedade);
+	 * // torna a representacao do atributo privado em acessivel
+	 * field.setAccessible(true);
+	 * 
+	 * // mapeia valor do atributo do restauranteOrigem mapeado para um novo objeto
+	 * // preservando o tipo Object novoValor = ReflectionUtils.getField(field,
+	 * restauranteRequisicao);
+	 * 
+	 * // altera o valor do objeto que que sera persistido conforme o campo enviado
+	 * na // requisicao ReflectionUtils.setField(field, restauranteDestino,
+	 * novoValor); }); }catch(IllegalArgumentException e) { Throwable rootCause =
+	 * ExceptionUtils.getRootCause(e); throw new
+	 * HttpMessageNotReadableException(e.getMessage(), rootCause,
+	 * serverHttpRequest); }
+	 * 
+	 * }
+	 * 
+	 * private void validate(Restaurante restaurante, String objectName) {
+	 * 
+	 * BeanPropertyBindingResult bindingResult = new
+	 * BeanPropertyBindingResult(restaurante, objectName);
+	 * 
+	 * validator.validate(restaurante, bindingResult);
+	 * 
+	 * if(bindingResult.hasErrors()) { throw new ValidacaoException(bindingResult);
+	 * } }
+	 */
 
 	@DeleteMapping("/{restauranteId}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
@@ -167,37 +168,37 @@ public class RestauranteController {
 		cadastroRestaurante.excluir(restauranteId);
 
 	}
-	
+
 	@PutMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.ativar(restauranteId);
 	}
-	
+
 	@DeleteMapping("/{restauranteId}/ativo")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativar(@PathVariable Long restauranteId) {
 		cadastroRestaurante.inativar(restauranteId);
 	}
-	
+
 	@PutMapping("/ativacao-em-massa")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void ativarEmMassa(@RequestBody List<Long> restauranteIds) {
 		cadastroRestaurante.ativarEmMassa(restauranteIds);
 	}
-	
+
 	@DeleteMapping("/ativacao-em-massa")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void inativarEmMassa(@RequestBody List<Long> restauranteIds) {
 		cadastroRestaurante.inativarEmMassa(restauranteIds);
 	}
-	
+
 	@PutMapping("/{restauranteId}/abertura")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void abrir(@PathVariable Long restauranteId) {
 		cadastroRestaurante.abrir(restauranteId);
 	}
-	
+
 	@PutMapping("/{restauranteId}/fechamento")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void fechar(@PathVariable Long restauranteId) {

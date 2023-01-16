@@ -42,6 +42,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
 	private static final String MSG_GENERICA_ERRO_USUARIO_FINAL = "Ocorreu um erro interno inesperado no sistema, "
 			+ "Tente novamente e se o problema persistir, entre em contato com o administrador.";
+	
 
 	@Override
 	protected ResponseEntity<Object> handleHttpMediaTypeNotAcceptable(HttpMediaTypeNotAcceptableException ex,
@@ -95,7 +96,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex, HttpHeaders headers,
 			HttpStatus status, WebRequest request) {
-
+		
 		ProblemType problemType = ProblemType.RECURSO_NAO_ENCONTRADO;
 
 		String detail = String.format("O recurso '%s' que você tentou acessar é inexistente.", ex.getRequestURL());

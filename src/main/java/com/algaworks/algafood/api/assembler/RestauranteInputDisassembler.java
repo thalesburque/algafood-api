@@ -25,9 +25,9 @@ public class RestauranteInputDisassembler {
 		restaurante.setCozinha(new Cozinha());
 		
 		//Evitar excecao causada pelo JPA
-		if(restaurante.getEndereco().getCidade() != null) {
+		if(restaurante.getEndereco() != null) {
 			restaurante.getEndereco().setCidade(new Cidade());
-		}
+		} 
 		
 		modelMapper.map(restauranteInput, restaurante);
 	}

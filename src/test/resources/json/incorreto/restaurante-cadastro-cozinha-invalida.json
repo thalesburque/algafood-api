@@ -1,7 +1,17 @@
 {
     "nome": "Hirota food",
-    "taxaFrete": 5,
+    "taxaFrete": 6.50,
     "cozinha": {
-        "id": 100  
+        "id": 100
+    },
+    "endereco": {
+        "cep": "38400-999",
+        "logradouro": "Rua João Pinheiro",
+        "numero": "1000",
+        "complemento": null,
+        "bairro": "Centro",
+        "cidade": {
+            "id": 1
+        }
     }
 }

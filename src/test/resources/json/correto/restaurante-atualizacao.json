@@ -1,7 +1,17 @@
 {
     "nome": "Gendai",
-    "taxaFrete": 5,
+    "taxaFrete": 6.50,
     "cozinha": {
         "id": 1
+    },
+    "endereco": {
+        "cep": "38400-999",
+        "logradouro": "Rua Joao Pinheiro",
+        "numero": "1000",
+        "complemento": null,
+        "bairro": "Centro",
+        "cidade": {
+            "id": 1
+        }
     }
 }

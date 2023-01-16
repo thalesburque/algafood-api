@@ -6,19 +6,22 @@ import static org.hamcrest.Matchers.hasSize;
 
 import java.math.BigDecimal;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 
+import com.algaworks.algafood.domain.model.Cidade;
 import com.algaworks.algafood.domain.model.Cozinha;
+import com.algaworks.algafood.domain.model.Endereco;
+import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.model.Restaurante;
+import com.algaworks.algafood.domain.repository.CidadeRepository;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
+import com.algaworks.algafood.domain.repository.EstadoRepository;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.util.DatabaseCleaner;
 import com.algaworks.algafood.util.ResourceUtils;
@@ -26,7 +29,6 @@ import com.algaworks.algafood.util.ResourceUtils;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
 public class CadastroRestauranteIT {
@@ -51,6 +53,12 @@ public class CadastroRestauranteIT {
 	@Autowired
 	private RestauranteRepository restauranteRepository;
 	
+	@Autowired
+	private EstadoRepository estadoRepository;
+	
+	@Autowired
+	private CidadeRepository cidadeRepository;
+	
 	private String jsonCadastroRestaurante;
 	private String jsonAtualizacaoRestaurante;
 	private String jsonCadastroRestauranteCozinhaInvalida;
@@ -61,7 +69,7 @@ public class CadastroRestauranteIT {
 	
 	private Restaurante restaurante;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
 		RestAssured.port = port;
@@ -183,10 +191,26 @@ public class CadastroRestauranteIT {
 		
 		novaCozinha = cozinhaRepository.save(novaCozinha);
 		
+		Estado estado = new Estado();
+		estado.setNome("Parana");
+		
+		estado = estadoRepository.save(estado);
+		
+		Cidade cidade = new Cidade();
+		cidade.setNome("Londrina");
+		cidade.setEstado(estado);
+		
+		cidade = cidadeRepository.save(cidade);
+		
+		Endereco endereco = new Endereco();
+		endereco.setCidade(cidade);
+		
+		
 		restaurante = new Restaurante();
 		restaurante.setNome("Hirota Food");
 		restaurante.setTaxaFrete(BigDecimal.valueOf(10));
 		restaurante.setCozinha(novaCozinha);
+		restaurante.setEndereco(endereco);
 		
 		restauranteRepository.save(restaurante);
 		
